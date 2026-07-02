@@ -1308,3 +1308,336 @@ document.head.appendChild(style);
 
 console.log('✅ Mama Njeri\'s Hotel System Complete!');
 console.log('🚀 Ready for deployment!');
+// ============================================
+// M-PESA INTEGRATION (Frontend)
+// ============================================
+
+/**
+ * Process M-Pesa payment via Daraja API
+ * Calls Vercel serverless function[reference:12]
+ */
+async function processMpesaPayment(phoneNumber, amount, orderId) {
+    try {
+        const response = await fetch('/api/initiatePayment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                phoneNumber: phoneNumber,
+                amount: amount,
+                accountReference: orderId || 'MamaNjeriOrder',
+                transactionDesc: 'Food Payment'
+            })
+        });
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('M-Pesa payment error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Check transaction status (polling)[reference:13]
+ */
+async function checkTransactionStatus(checkoutRequestID) {
+    try {
+        const response = await fetch(`/api/checkStatus?checkoutRequestID=${checkoutRequestID}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Status check error:', error);
+        return { status: 'ERROR', error: error.message };
+    }
+}
+
+/**
+ * Track order status
+ */
+async function trackOrder(orderId) {
+    try {
+        const response = await fetch(`/api/trackOrder?orderId=${orderId}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Track order error:', error);
+        return { error: error.message };
+    }
+}
+
+/**
+ * Update order status (Admin)
+ */
+async function updateOrderStatus(orderId, status, notes = '') {
+    try {
+        const response = await fetch('/api/trackOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ orderId, status, notes })
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Update status error:', error);
+        return { error: error.message };
+    }
+}
+
+/**
+ * Send SMS notification
+ */
+async function sendSMS(phoneNumber, message) {
+    try {
+        const response = await fetch('/api/sendSms', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ to: phoneNumber, message })
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('SMS error:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// ============================================
+// UPDATED M-PESA MODAL FUNCTIONS
+// ============================================
+
+let currentCheckoutRequestID = null;
+let pollingInterval = null;
+
+function showMpesaModal(amount, orderId = null) {
+    document.getElementById('mpesaAmount').textContent = 'KSh ' + amount.toLocaleString();
+    document.getElementById('mpesaOrderId').value = orderId || 'MamaNjeriOrder';
+    document.getElementById('mpesaModal').style.display = 'flex';
+}
+
+function closeMpesaModal() {
+    document.getElementById('mpesaModal').style.display = 'none';
+    document.getElementById('mpesaStatus').innerHTML = '';
+    document.getElementById('mpesaPhone').value = '';
+    
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+    }
+}
+
+async function processMpesa() {
+    const phone = document.getElementById('mpesaPhone').value.trim();
+    const orderId = document.getElementById('mpesaOrderId').value;
+    const statusDiv = document.getElementById('mpesaStatus');
+    
+    if (!phone || phone.length < 10) {
+        statusDiv.innerHTML = '<span style="color:#e74c3c;">❌ Please enter a valid phone number</span>';
+        return;
+    }
+
+    const amountText = document.getElementById('mpesaAmount').textContent.replace(/[^0-9]/g, '');
+    const amount = parseInt(amountText) || 0;
+
+    statusDiv.innerHTML = '<div class="loading-spinner" style="margin:0 auto;"></div><p style="color:#3498db;">⏳ Initiating payment...</p>';
+
+    // Call the backend to initiate STK Push
+    const result = await processMpesaPayment(phone, amount, orderId);
+
+    if (!result.success) {
+        statusDiv.innerHTML = `<span style="color:#e74c3c;">❌ ${result.error || 'Payment initiation failed'}</span>`;
+        return;
+    }
+
+    currentCheckoutRequestID = result.checkoutRequestID;
+    
+    statusDiv.innerHTML = `
+        <div style="background:#eafaf1; padding:15px; border-radius:12px;">
+            <p style="color:#27ae60; font-weight:bold;">✅ STK Push sent!</p>
+            <p style="font-size:0.9rem; color:#7f8c8d;">Check your phone (${phone}) for the M-Pesa prompt.</p>
+            <p style="font-size:0.8rem; color:#95a5a6;">Waiting for confirmation...</p>
+            <div class="loading-spinner" style="margin:10px auto;"></div>
+        </div>
+    `;
+
+    // Start polling for status[reference:14]
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+    }
+
+    let attempts = 0;
+    const maxAttempts = 30; // 30 * 3 seconds = 90 seconds timeout
+
+    pollingInterval = setInterval(async () => {
+        attempts++;
+        
+        const statusResult = await checkTransactionStatus(currentCheckoutRequestID);
+        
+        if (statusResult.status === 'SUCCESS') {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+            
+            statusDiv.innerHTML = `
+                <div style="background:#eafaf1; padding:15px; border-radius:12px; border-left:4px solid #2ecc71;">
+                    <p style="color:#27ae60; font-weight:bold;">✅ Payment successful!</p>
+                    <p style="font-size:0.9rem; color:#7f8c8d;">Receipt: ${statusResult.mpesaReceiptNumber || 'N/A'}</p>
+                    <p style="font-size:0.9rem; color:#7f8c8d;">Amount: KSh ${statusResult.amount || amount}</p>
+                </div>
+            `;
+
+            // Update order status
+            if (orderId && orderId !== 'MamaNjeriOrder') {
+                await updateOrderStatus(orderId, 'preparing', 'Payment confirmed, preparing your order');
+            }
+
+            setTimeout(() => {
+                closeMpesaModal();
+                showToast('✅ Payment successful! Thank you for dining with us!');
+                // Clear cart
+                cart = [];
+                updateCartUI();
+                updateOrderPage();
+                document.getElementById('billDisplay').style.display = 'none';
+            }, 3000);
+            
+        } else if (statusResult.status === 'FAILED') {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+            
+            statusDiv.innerHTML = `
+                <div style="background:#fdedec; padding:15px; border-radius:12px; border-left:4px solid #e74c3c;">
+                    <p style="color:#e74c3c; font-weight:bold;">❌ Payment failed</p>
+                    <p style="font-size:0.9rem; color:#7f8c8d;">${statusResult.resultDesc || 'Transaction was not completed'}</p>
+                </div>
+            `;
+            
+        } else if (statusResult.status === 'PENDING' && attempts >= maxAttempts) {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+            
+            statusDiv.innerHTML = `
+                <div style="background:#fef9e7; padding:15px; border-radius:12px; border-left:4px solid #f39c12;">
+                    <p style="color:#f39c12; font-weight:bold;">⏳ Still waiting...</p>
+                    <p style="font-size:0.9rem; color:#7f8c8d;">Please check your phone and complete the payment.</p>
+                    <p style="font-size:0.8rem; color:#95a5a6;">You can also check your order status later.</p>
+                    <button onclick="closeMpesaModal()" style="margin-top:10px; padding:8px 20px; background:#3498db; color:#fff; border:none; border-radius:30px; cursor:pointer;">Close</button>
+                </div>
+            `;
+        }
+    }, 3000);
+}
+
+// ============================================
+// UPDATED confirmPayment FUNCTION
+// ============================================
+
+function confirmPayment() {
+    const name = document.getElementById('customerName')?.value;
+    const phone = document.getElementById('customerPhone')?.value;
+    const total = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+    
+    if (!name || !phone) {
+        showToast('Please enter your name and phone number first!');
+        return;
+    }
+    
+    if (cart.length === 0) {
+        showToast('🛒 Your cart is empty!');
+        return;
+    }
+
+    // Generate order ID
+    const orderId = 'ORDER-' + Date.now();
+    
+    // Save order first
+    const orderData = {
+        orderId: orderId,
+        customerName: name,
+        customerPhone: phone,
+        items: cart.map(item => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity || 1
+        })),
+        total: total,
+        status: 'pending',
+        paid: false,
+        paymentStatus: 'pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection('orders').add(orderData)
+        .then(() => {
+            showMpesaModal(total, orderId);
+        })
+        .catch((error) => {
+            console.error('Error saving order:', error);
+            showToast('❌ Error creating order. Please try again.');
+        });
+}
+
+// ============================================
+// ORDER TRACKING UI
+// ============================================
+
+function loadOrderTracking(orderId) {
+    const container = document.getElementById('trackingContainer');
+    if (!container) return;
+
+    container.innerHTML = '<div class="loading-spinner"></div><p>Loading order status...</p>';
+
+    trackOrder(orderId).then(data => {
+        if (data.error) {
+            container.innerHTML = `<p style="color:#e74c3c;">❌ ${data.error}</p>`;
+            return;
+        }
+
+        const statusEmoji = {
+            'pending': '📋',
+            'preparing': '👨‍🍳',
+            'ready': '🍽️',
+            'delivered': '✅',
+            'cancelled': '❌'
+        };
+
+        const statusLabels = {
+            'pending': 'Order Received',
+            'preparing': 'Being Prepared',
+            'ready': 'Ready for Pickup',
+            'delivered': 'Delivered',
+            'cancelled': 'Cancelled'
+        };
+
+        container.innerHTML = `
+            <div class="tracking-card">
+                <h3>Order #${data.orderId}</h3>
+                <div class="tracking-status">
+                    <span class="status-icon">${statusEmoji[data.status] || '📋'}</span>
+                    <span class="status-label">${statusLabels[data.status] || data.status}</span>
+                </div>
+                <div class="tracking-timeline">
+                    ${(data.trackingHistory || []).map(entry => `
+                        <div class="timeline-item">
+                            <span class="timeline-icon">${statusEmoji[entry.status] || '📋'}</span>
+                            <div class="timeline-content">
+                                <strong>${statusLabels[entry.status] || entry.status}</strong>
+                                <p>${entry.notes || ''}</p>
+                                <small>${entry.timestamp?.toDate?.()?.toLocaleString() || 'Just now'}</small>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="tracking-details">
+                    <p><strong>Customer:</strong> ${data.customerName}</p>
+                    <p><strong>Total:</strong> KSh ${data.total?.toLocaleString() || 0}</p>
+                    <p><strong>Items:</strong> ${(data.items || []).map(i => `${i.name} x${i.quantity}`).join(', ')}</p>
+                </div>
+            </div>
+        `;
+    });
+}

@@ -149,3 +149,43 @@
     <script src="script.js"></script>
 </body>
 </html>
+<!-- ===== M-PESA PAYMENT MODAL ===== -->
+<div id="mpesaModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#fff; max-width:420px; width:90%; padding:30px; border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,0.4); animation:fadeIn 0.3s ease;">
+        <h2 style="text-align:center; color:#2ecc71; margin-bottom:5px;">💳 M-Pesa Payment</h2>
+        <p style="text-align:center; color:#7f8c8d; margin-bottom:20px;">You'll receive a prompt on your phone</p>
+        
+        <input type="tel" id="mpesaPhone" placeholder="e.g. 0712345678" 
+               style="width:100%; padding:14px; border:2px solid #ddd; border-radius:12px; font-size:1rem; margin-bottom:10px;" />
+        
+        <input type="hidden" id="mpesaOrderId" value="" />
+        
+        <p style="font-size:1rem; color:#2d2d2d; text-align:center;">
+            Amount: <strong id="mpesaAmount" style="color:#2ecc71;">KSh 0</strong>
+        </p>
+        
+        <button onclick="processMpesa()" 
+                style="width:100%; padding:14px; background:#2ecc71; color:#fff; border:none; border-radius:30px; font-size:1.1rem; font-weight:bold; cursor:pointer; transition:0.3s;">
+            ✅ Pay Now
+        </button>
+        <button onclick="closeMpesaModal()" 
+                style="width:100%; margin-top:10px; padding:12px; background:#e74c3c; color:#fff; border:none; border-radius:30px; cursor:pointer; transition:0.3s;">
+            Cancel
+        </button>
+        <div id="mpesaStatus" style="margin-top:15px; text-align:center;"></div>
+    </div>
+</div>
+
+<!-- ===== ORDER TRACKING SECTION ===== -->
+<section id="trackingSection" style="padding:40px 20px; max-width:800px; margin:0 auto;">
+    <h2>📦 Track Your Order</h2>
+    <div style="display:flex; gap:10px; margin-bottom:20px;">
+        <input type="text" id="trackingOrderId" placeholder="Enter Order ID (e.g., ORDER-1234567890)" 
+               style="flex:1; padding:12px; border:2px solid #ddd; border-radius:8px; font-size:1rem;" />
+        <button onclick="loadOrderTracking(document.getElementById('trackingOrderId').value)" 
+                style="padding:12px 30px; background:#3498db; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
+            Track
+        </button>
+    </div>
+    <div id="trackingContainer"></div>
+</section>
