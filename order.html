@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Place Order - Mama Njeri's Hotel</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+
+    <nav class="nav-menu" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">🌿 Mama Njeri's</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="breakfast.html"><i class="fas fa-sun"></i> Breakfast</a></li>
+                <li><a href="lunch.html"><i class="fas fa-cloud-sun"></i> Lunch</a></li>
+                <li><a href="order.html" class="active"><i class="fas fa-shopping-cart"></i> Order</a></li>
+                <li><a href="login.html"><i class="fas fa-user"></i> Login</a></li>
+                <li><a href="admin.html"><i class="fas fa-crown"></i> Admin</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="order-section">
+        <div class="container">
+            <h1>🛒 Place Your Order</h1>
+            <p class="order-subtitle">Fill in your details and select your favorite dishes</p>
+
+            <div class="order-wrapper">
+                <!-- Left Column - Order Form -->
+                <div class="order-form-container">
+                    <div class="order-form">
+                        <h2><i class="fas fa-user-circle"></i> Customer Details</h2>
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="customerName" placeholder="e.g., Wanjiru Mwangi" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="customerPhone" placeholder="e.g., 0712345678" required />
+                            <small><i class="fas fa-info-circle"></i> We'll send order updates to this number</small>
+                        </div>
+
+                        <h2><i class="fas fa-utensils"></i> Select Your Dishes</h2>
+                        <div class="order-items-container" id="order-items">
+                            <p class="empty-cart">🛒 Your cart is empty. Browse our <a href="breakfast.html">Breakfast</a> or <a href="lunch.html">Lunch</a> menu to add items.</p>
+                        </div>
+
+                        <h2><i class="fas fa-pencil-alt"></i> Special Requests</h2>
+                        <div class="form-group">
+                            <textarea id="specialRequest" placeholder="Any special instructions? (e.g., extra spicy, no onions, allergy info)"></textarea>
+                        </div>
+
+                        <div class="time-estimate">
+                            <h3><i class="fas fa-clock"></i> Estimated Cooking Time</h3>
+                            <div class="time-display">
+                                <span id="cookingTime">-</span>
+                                <span id="timeUnit">minutes</span>
+                            </div>
+                            <div id="specialOrderNote"></div>
+                        </div>
+
+                        <div class="order-actions">
+                            <button onclick="calculateBill()" class="btn-calculate">
+                                <i class="fas fa-calculator"></i> Calculate Bill
+                            </button>
+                            <button onclick="clearCart()" class="btn-clear">
+                                <i class="fas fa-trash"></i> Clear Cart
+                            </button>
+                        </div>
+
+                        <!-- Bill Display -->
+                        <div id="billDisplay" style="display:none;">
+                            <h2><i class="fas fa-receipt"></i> Your Bill</h2>
+                            <div id="billDetails"></div>
+                            <button onclick="submitOrder()" class="btn-submit">
+                                <i class="fas fa-paper-plane"></i> Submit Order
+                            </button>
+                            <button onclick="confirmPayment()" class="btn-payment">
+                                <i class="fas fa-credit-card"></i> Proceed to Payment
+                            </button>
+                            <p class="payment-note"><i class="fas fa-info-circle"></i> Payment will be processed after food is served</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Order Summary -->
+                <div class="order-summary">
+                    <h3><i class="fas fa-shopping-bag"></i> Order Summary</h3>
+                    <div id="orderSummaryItems">
+                        <p class="empty-summary">No items selected</p>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total:</span>
+                        <span id="summaryTotal">KSh 0</span>
+                    </div>
+                    <div class="summary-items">
+                        <span>Items:</span>
+                        <span id="summaryCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🌿 Mama Njeri's Hotel</h3>
+                <p>Authentic Kenyan cuisine served with love since 1998.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="breakfast.html">Breakfast</a>
+                <a href="lunch.html">Lunch</a>
+                <a href="order.html">Order</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p><i class="fas fa-phone"></i> 0712 345 678</p>
+                <p><i class="fas fa-envelope"></i> info@mamanjerishotel.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Mama Njeri's Hotel • Built with ❤️</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Your Firebase Config -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Your Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>

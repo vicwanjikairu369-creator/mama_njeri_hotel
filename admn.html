@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Mama Njeri's Hotel</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+
+    <nav class="nav-menu" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">🌿 Mama Njeri's</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="breakfast.html"><i class="fas fa-sun"></i> Breakfast</a></li>
+                <li><a href="lunch.html"><i class="fas fa-cloud-sun"></i> Lunch</a></li>
+                <li><a href="order.html"><i class="fas fa-shopping-cart"></i> Order</a></li>
+                <li><a href="login.html"><i class="fas fa-user"></i> Login</a></li>
+                <li><a href="admin.html" class="active"><i class="fas fa-crown"></i> Admin</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section class="admin-section">
+        <div class="container">
+            <h1>👑 Admin Dashboard</h1>
+            <p class="admin-subtitle">Manage orders, menu items, and customer feedback</p>
+
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <i class="fas fa-shopping-bag"></i>
+                    <div>
+                        <span class="stat-number" id="totalOrders">0</span>
+                        <span class="stat-label">Total Orders</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <span class="stat-number" id="totalCustomers">0</span>
+                        <span class="stat-label">Customers</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <div>
+                        <span class="stat-number" id="avgRating">0</span>
+                        <span class="stat-label">Average Rating</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-money-bill"></i>
+                    <div>
+                        <span class="stat-number" id="totalRevenue">KSh 0</span>
+                        <span class="stat-label">Revenue</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="showTab('orders')">📦 Orders</button>
+                <button class="tab-btn" onclick="showTab('menu')">🍽️ Menu Management</button>
+                <button class="tab-btn" onclick="showTab('feedback')">💬 Feedback</button>
+                <button class="tab-btn" onclick="showTab('customers')">👤 Customers</button>
+            </div>
+
+            <div id="ordersTab" class="tab-content active">
+                <h2>📦 All Orders</h2>
+                <div id="allOrders"></div>
+            </div>
+
+            <div id="menuTab" class="tab-content">
+                <h2>🍽️ Manage Menu</h2>
+                <div class="add-dish-form">
+                    <h3>Add New Dish</h3>
+                    <div class="form-row">
+                        <input type="text" id="dishName" placeholder="Dish Name" />
+                        <input type="number" id="dishPrice" placeholder="Price (KES)" />
+                        <select id="dishCategory">
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="dishNutrition" placeholder="Nutrition (e.g., Calories: 200, Protein: 10g)" />
+                        <input type="number" id="dishTime" placeholder="Cooking Time (minutes)" />
+                        <input type="text" id="dishImage" placeholder="Image URL" />
+                    </div>
+                    <button onclick="adminAddDish()" class="btn-add-dish">
+                        <i class="fas fa-plus"></i> Add Dish
+                    </button>
+                </div>
+                <div id="menuItemsList"></div>
+            </div>
+
+            <div id="feedbackTab" class="tab-content">
+                <h2>💬 Customer Feedback</h2>
+                <div id="allFeedback"></div>
+            </div>
+
+            <div id="customersTab" class="tab-content">
+                <h2>👤 All Customers</h2>
+                <div id="allCustomers"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🌿 Mama Njeri's Hotel</h3>
+                <p>Authentic Kenyan cuisine served with love since 1998.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="breakfast.html">Breakfast</a>
+                <a href="lunch.html">Lunch</a>
+                <a href="order.html">Order</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p><i class="fas fa-phone"></i> 0712 345 678</p>
+                <p><i class="fas fa-envelope"></i> info@mamanjerishotel.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Mama Njeri's Hotel • Built with ❤️</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Your Firebase Config -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Your Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>

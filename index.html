@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mama Njeri's Hotel - Authentic Kenyan Cuisine</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+
+    <!-- ===== BLACK HERO SECTION ===== -->
+    <header class="hero">
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <div class="logo-container">
+                    <i class="fas fa-utensils"></i>
+                    <h1 class="hotel-name">🌿 Mama Njeri's Hotel</h1>
+                </div>
+                <p class="tagline">Authentic Kenyan Home Cooking • Since 1998</p>
+                <p class="sub-tagline">Where every meal tells a story of love and tradition</p>
+                <div class="hero-buttons">
+                    <a href="breakfast.html" class="btn-order">
+                        <i class="fas fa-utensil-spoon"></i> Order Now
+                    </a>
+                    <a href="#overview" class="btn-secondary">
+                        <i class="fas fa-play-circle"></i> Watch Our Kitchen
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">25+</span>
+                        <span class="stat-label">Years Experience</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Delicious Dishes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Happy Customers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="nav-menu" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">🌿 Mama Njeri's</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="breakfast.html"><i class="fas fa-sun"></i> Breakfast</a></li>
+                <li><a href="lunch.html"><i class="fas fa-cloud-sun"></i> Lunch</a></li>
+                <li><a href="order.html"><i class="fas fa-shopping-cart"></i> Order</a></li>
+                <li><a href="login.html"><i class="fas fa-user"></i> Login</a></li>
+                <li><a href="admin.html"><i class="fas fa-crown"></i> Admin</a></li>
+            </ul>
+            <div class="nav-cart" onclick="viewCart()">
+                <i class="fas fa-shopping-bag"></i>
+                <span id="cartCount">0</span>
+            </div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== OVERVIEW / VIDEO SECTION ===== -->
+    <section class="overview" id="overview">
+        <div class="container">
+            <h2>🏆 Our Kitchen in Action</h2>
+            <p class="section-subtitle">Watch the magic happen — fresh, authentic, and made with love</p>
+            
+            <div class="video-grid">
+                <div class="video-card">
+                    <video controls poster="images/kitchen-poster.jpg">
+                        <source src="videos/kitchen-tour.mp4" type="video/mp4" />
+                        <source src="videos/kitchen-tour.webm" type="video/webm" />
+                        Your browser does not support video.
+                    </video>
+                    <p class="video-caption">👩‍🍳 Behind the Scenes: Our Busy Kitchen</p>
+                </div>
+                <div class="video-card">
+                    <video controls poster="images/ugali-poster.jpg">
+                        <source src="videos/cooking-ugali.mp4" type="video/mp4" />
+                        <source src="videos/cooking-ugali.webm" type="video/webm" />
+                        Your browser does not support video.
+                    </video>
+                    <p class="video-caption">🍲 The Perfect Ugali - A Kenyan Staple</p>
+                </div>
+                <div class="video-card">
+                    <video controls poster="images/food-prep-poster.jpg">
+                        <source src="videos/food-preparation.mp4" type="video/mp4" />
+                        <source src="videos/food-preparation.webm" type="video/webm" />
+                        Your browser does not support video.
+                    </video>
+                    <p class="video-caption">🌶️ Fresh Ingredients, Authentic Flavors</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== QUICK MENU LINKS ===== -->
+    <section class="quick-links">
+        <div class="container">
+            <h2>📋 Explore Our Menus</h2>
+            <div class="link-grid">
+                <div class="link-card breakfast-card">
+                    <div class="card-icon">🌅</div>
+                    <h3>Breakfast</h3>
+                    <p>6:00 AM - 10:30 AM</p>
+                    <p class="card-desc">Start your day with authentic Kenyan breakfast</p>
+                    <a href="breakfast.html" class="btn-small">View Menu <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="link-card lunch-card">
+                    <div class="card-icon">🌞</div>
+                    <h3>Lunch</h3>
+                    <p>11:30 AM - 3:00 PM</p>
+                    <p class="card-desc">Hearty meals for a productive afternoon</p>
+                    <a href="lunch.html" class="btn-small">View Menu <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="link-card order-card">
+                    <div class="card-icon">🛒</div>
+                    <h3>Order Online</h3>
+                    <p>24/7 Ordering</p>
+                    <p class="card-desc">Place your order and we'll prepare it fresh</p>
+                    <a href="order.html" class="btn-small">Order Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="link-card portal-card">
+                    <div class="card-icon">👤</div>
+                    <h3>Customer Portal</h3>
+                    <p>Track Orders</p>
+                    <p class="card-desc">View your order history and feedback</p>
+                    <a href="login.html" class="btn-small">Login <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SPECIAL OFFERS ===== -->
+    <section class="special-offers">
+        <div class="container">
+            <h2>🔥 Today's Special Offers</h2>
+            <div class="offer-slider">
+                <div class="offer-card">
+                    <span class="offer-tag">🔥 10% OFF</span>
+                    <h3>Family Combo</h3>
+                    <p>Ugali Nyama Choma + 2 Soda</p>
+                    <span class="offer-price">KSh 1,200 <del>KSh 1,350</del></span>
+                </div>
+                <div class="offer-card">
+                    <span class="offer-tag">🥤 FREE Soda</span>
+                    <h3>Lunch Special</h3>
+                    <p>Any Rice + Stew combo</p>
+                    <span class="offer-price">KSh 350+ <span class="free">FREE Soda</span></span>
+                </div>
+                <div class="offer-card">
+                    <span class="offer-tag">🌅 Early Bird</span>
+                    <h3>Breakfast Deal</h3>
+                    <p>Any breakfast + Tea @ KSh 100</p>
+                    <span class="offer-price">From KSh 100</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>💬 What Our Customers Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"The best ugali nyama choma in town! Mama Njeri's is my go-to spot."</p>
+                    <div class="customer">
+                        <span class="name">- James M.</span>
+                        <span class="location">Nairobi</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Their chapati beans taste just like my grandmother used to make."</p>
+                    <div class="customer">
+                        <span class="name">- Grace W.</span>
+                        <span class="location">Kiambu</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐</div>
+                    <p>"Quick service, delicious food, and very affordable prices."</p>
+                    <div class="customer">
+                        <span class="name">- David O.</span>
+                        <span class="location">Mombasa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🌿 Mama Njeri's Hotel</h3>
+                <p>Authentic Kenyan cuisine served with love since 1998.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="breakfast.html">Breakfast</a>
+                <a href="lunch.html">Lunch</a>
+                <a href="order.html">Order</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p><i class="fas fa-phone"></i> 0712 345 678</p>
+                <p><i class="fas fa-envelope"></i> info@mamanjerishotel.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Kenyatta Road, Opposite Market</p>
+                <p><i class="fas fa-clock"></i> Mon-Sat: 6AM - 9PM</p>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Get updates on special offers</p>
+                <form id="newsletterForm">
+                    <input type="email" placeholder="Your email" required />
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Mama Njeri's Hotel • Built with ❤️ • All rights reserved</p>
+        </div>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Your Firebase Config -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Your Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>
